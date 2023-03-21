@@ -12,7 +12,7 @@ public class Utente
     public string? Password { get; set; }
     public string? Telefono { get; set; }
 
-    public Utente(string cognome, string nome, string email, string? password = null, string? telefono = null)
+    public Utente(string cognome, string nome, string email, string? password, string? telefono)
     {
         Cognome = cognome;
         Nome = nome;
