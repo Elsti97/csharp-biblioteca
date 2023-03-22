@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 public class Biblioteca
 {
-    private List<Utente> utenti;
-    private List<Documento> documenti;
-    private List<Prestito> prestiti;
+    readonly List<Utente> utenti;
+    readonly List<Documento> documenti;
+    readonly List<Prestito> prestiti;
 
     public Biblioteca()
     {
@@ -27,61 +27,24 @@ public class Biblioteca
         documenti.Add(documento);
     }
 
-    public void AggiungiPrestito(Utente utente, Documento documento, DateTime dataInizio, DateTime dataFine)
+    public void AggiungiPrestito(Prestito prestito)
     {
-        if (!utenti.Contains(utente))
-        {
-            Console.WriteLine("Utente non registrato");
-            return;
-        }
-
-        if (!documenti.Contains(documento))
-        {
-            Console.WriteLine("Documento inesistente");
-            return;
-        }
-
-        prestiti.Add(new Prestito(utente, documento, dataInizio, dataFine));
+        prestiti.Add(prestito);
     }
 
-    public List<Documento> RicercaDocumento(string titolo)
+    public Documento? CercaDocumentoCodice(string codice)
     {
-        return documenti.FindAll(documento => documento.Titolo.Contains(titolo));
+        return documenti.FirstOrDefault(d => d.Codice == codice);
     }
 
-    public List<Documento> RicercaDocumentoPerCodice(string codice)
+    public Documento? CercaDocumentoTitolo(string titolo)
     {
-        return documenti.FindAll(documento => documento.Codice == codice);
+        return documenti.FirstOrDefault(d => d.Titolo == titolo);
     }
 
-    public List<Prestito> RicercaPrestito(string nome, string cognome)
+    public IEnumerable<Prestito> CercaPrestito(string nomeUtente, string cognomeUtente)
     {
-        return prestiti.FindAll(prestito => prestito.Utente.Nome == nome && prestito.Utente.Cognome == cognome);
-    }
-
-    public void PrestitoDocumento(string codice, string cognome, string nome, DateTime dataInizio, DateTime dataFine)
-    {
-        Documento documento = RicercaDocumentoPerCodice(codice).FirstOrDefault();
-        if (documento == null)
-        {
-            Console.WriteLine("Documento inesistente");
-            return;
-        }
-
-        Utente utente = utenti.Find(utente => utente.Nome == nome && utente.Cognome == cognome);
-        if (utente == null)
-        {
-            Console.WriteLine("Utente non registrato");
-            return;
-        }
-
-        if (prestiti.Any(prestito => prestito.Documento.Codice == codice && prestito.DataFine > DateTime.Now))
-        {
-            Console.WriteLine("Il documento non disponibile");
-            return;
-        }
-
-        AggiungiPrestito(utente, documento, dataInizio, dataFine);
+        return prestiti.Where(prestito => prestito.Utente.Nome == nomeUtente && prestito.Utente.Cognome == cognomeUtente);
     }
 }
 
